@@ -191,13 +191,13 @@ function pickVoice(){
 }
 function say(text,slow){
   if(!window.speechSynthesis){return}
-  window.speechSynthesis.cancel();
+  const ss=window.speechSynthesis;if(ss.speaking||ss.pending)ss.cancel();
   const u=new SpeechSynthesisUtterance(text);
   u.lang="en-US";const v=pickVoice();if(v)u.voice=v;
   u.rate=slow?0.6:0.95;
   document.body.classList.add("speaking");
   u.onend=u.onerror=()=>document.body.classList.remove("speaking");
-  window.speechSynthesis.speak(u);
+  ss.speak(u);
 }
 function listen(cb){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -269,6 +269,7 @@ function home(){
   <h2>Configurações</h2>
   <label>Voz em inglês:&nbsp;<select onchange="st.voice=this.value;save();say('Hello, nice to meet you.')">
   ${vs.length?vs.map(v=>`<option value="${v.name}" ${pickVoice()&&pickVoice().name===v.name?"selected":""}>${v.name} (${v.lang})</option>`).join(""):"<option>Carregando vozes…</option>"}</select></label>
+  <p class="hint">iPhone sem som? Desligue o modo silencioso (chave ao lado do aparelho) e aumente o volume.</p>
   <p class="hint">Dica: no Chrome ou Edge o microfone e as vozes funcionam melhor. O reconhecimento de voz usa internet.</p>
   </div>`;
 }
@@ -298,8 +299,8 @@ function render(){
   else if(S.mode==="ouvir") body=listenView(c);
   else body=transView(c);
   app.innerHTML=topBar()+`<main class="stage"><div class="card">${body}</div></main>`;
-  if(isNew(c)&&!S.seen[c.id])setTimeout(()=>say(c.en),300);
-  else if(S.mode==="ouvir")setTimeout(()=>say(c.en),300);
+  if(isNew(c)&&!S.seen[c.id])say(c.en);
+  else if(S.mode==="ouvir")say(c.en);
   const inp=$("#inp");if(inp){inp.focus();inp.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();S.shown?next(S.level):check()}}}
 }
 function learnView(c){return `<p class="say">Frase nova. Ouça, repita em voz alta e continue.</p>
@@ -354,6 +355,8 @@ function finish(){
   <p class="hint">Volte amanhã: revisar um pouco todo dia é o que fixa o inglês.</p>
   <button class="primary" onclick="home()">Voltar ao início</button></div></div>`;
 }
+// iPhone/iPad: libera o áudio no primeiro toque na tela
+document.addEventListener("click",function(){try{const u=new SpeechSynthesisUtterance(" ");u.volume=0;window.speechSynthesis.speak(u)}catch(e){}},{once:true});
 home();
 </script>
 </body>
