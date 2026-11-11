@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UaiTrump — Aprenda a falar inglês</title>
+<style>
+:root{--ink:#12263A;--bg:#EDF1F3;--card:#fff;--sun:#FFC93C;--leaf:#2F9E6B;--coral:#E4572E;--mute:#5B6B7A;--line:#D5DDE3;
+--sans:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;--serif:Georgia,"Times New Roman",serif}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:17px/1.5 var(--sans);min-height:100vh}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;border-radius:12px;padding:12px 18px;background:#fff;box-shadow:inset 0 0 0 2px var(--line);font-weight:600}
+button:hover{box-shadow:inset 0 0 0 2px var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.wrap{max-width:760px;margin:0 auto;padding:24px 18px 60px}
+h1{font-size:2rem;margin:0;letter-spacing:-.5px}
+h2{font-size:1.15rem;margin:34px 0 12px}
+.sub{color:var(--mute);margin:2px 0 18px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.stat{background:var(--card);border-radius:12px;padding:8px 14px;font-weight:600}
+.today{background:var(--ink);color:#fff;border-radius:20px;padding:26px}
+.today h2{margin:0 0 4px;font-size:1.5rem}
+.today p{margin:0 0 18px;color:#B9C7D3}
+.primary{background:var(--sun);color:var(--ink);box-shadow:none;font-size:1.1rem;padding:14px 26px;border-radius:14px}
+.primary:hover{box-shadow:0 0 0 3px #fff3}
+.modes{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 6px}
+.modes button{background:#ffffff14;color:#fff;box-shadow:none;padding:9px 14px;font-weight:500}
+.modes button.on{background:#fff;color:var(--ink);font-weight:700}
+.modedesc{font-size:.92rem;color:#B9C7D3;margin:0 0 20px;min-height:1.4em}
+.unit{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.unit .ic{font-size:1.7rem;width:40px;text-align:center}
+.unit .mid{flex:1;min-width:0}
+.unit b{display:block}
+.unit small{color:var(--mute)}
+.pbar{height:7px;background:var(--line);border-radius:9px;overflow:hidden;margin-top:6px}
+.pbar i{display:block;height:100%;background:var(--leaf)}
+details{background:var(--card);border-radius:14px;padding:14px 18px}
+summary{cursor:pointer;font-weight:700}
+details ul{padding-left:20px;margin:10px 0 0}
+details li{margin-bottom:6px}
+select{padding:10px;border-radius:10px;border:2px solid var(--line);background:#fff;max-width:100%}
+/* sessão */
+.top{display:flex;align-items:center;gap:14px;max-width:760px;margin:0 auto;padding:18px}
+.top .bar{flex:1;height:10px;background:var(--line);border-radius:9px;overflow:hidden}
+.top .bar i{display:block;height:100%;background:var(--leaf);transition:width .3s}
+.ghost{background:transparent;box-shadow:none;padding:8px 10px;color:var(--mute)}
+.stage{max-width:760px;margin:0 auto;padding:6px 18px 60px}
+.card{background:var(--card);border-radius:22px;padding:30px 26px;text-align:center}
+.say{color:var(--mute);margin:0 0 14px}
+.phrase{font:600 2.1rem/1.25 var(--serif);margin:6px 0 10px;transition:color .2s}
+.speaking .phrase{color:var(--leaf)}
+.pron{font-size:1.1rem;color:var(--ink);background:#FFF3C9;display:inline-block;padding:4px 12px;border-radius:9px;margin-bottom:8px}
+.pt{color:var(--mute);font-size:1.15rem;margin:6px 0 18px}
+.ptbig{font-size:1.7rem;font-weight:700;line-height:1.3;margin:6px 0 20px}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.res{min-height:56px;margin:12px 0}
+.w-ok{color:var(--leaf);font-weight:700}
+.w-bad{color:var(--coral);font-weight:700;text-decoration:underline wavy}
+.score{font-size:1.4rem;font-weight:800}
+.hint{color:var(--mute);margin:8px 0}
+.msg{background:#FDECE6;color:#8A2A10;border-radius:12px;padding:10px 14px;display:inline-block}
+input.ans{width:100%;font-size:1.3rem;padding:14px;border-radius:12px;border:2px solid var(--line);text-align:center}
+.rate{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.rate button{min-width:120px;color:#fff;box-shadow:none}
+.r0{background:var(--coral)}.r1{background:#C98A00}.r2{background:var(--leaf)}
+.rate button.sug{outline:4px solid var(--sun)}
+.big{font-size:3rem;margin:0}
+.hidden{display:none}
+.pulse{animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.45}}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}.top .bar i{transition:none}}
+@media (max-width:520px){.phrase{font-size:1.7rem}.unit{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+window.onerror=function(m,u,l){document.getElementById("app").innerHTML='<div style="padding:24px;font-family:sans-serif"><h2>Ops, deu erro</h2><p>'+m+" (linha "+l+")</p></div>"};
+/* ============ CONTEÚDO: [inglês, português, como pronunciar] ============ */
+const UNITS=[
+{name:"Cumprimentos",ic:"👋",cards:[
+["Hello, how are you?","Olá, como vai você?","rê-LÔU, RÁU ar iú"],
+["I'm fine, thank you. And you?","Estou bem, obrigado. E você?","aim FÁIN, THÉNK iú. end IÚ"],
+["Good morning!","Bom dia!","gud MÓR-nin"],
+["Good night.","Boa noite.","gud NÁIT"],
+["See you later!","Até mais tarde!","sí iú LÊI-ter"],
+["Nice to meet you.","Prazer em te conhecer.","náis tu MÍT iú"],
+["Thank you very much.","Muito obrigado.","THÉNK iú VÉ-ri mâtch"],
+["You're welcome.","De nada.","iór UÉL-câm"]]},
+{name:"Apresentações",ic:"🙋",cards:[
+["My name is Carlos.","Meu nome é Carlos.","mai NÊIM iz CÁR-los"],
+["I'm from Brazil.","Sou do Brasil.","aim from bra-ZÍL"],
+["I'm learning English.","Estou aprendendo inglês.","aim LÂR-nin ÍN-glish"],
+["What do you do?","O que você faz da vida?","uót du iú DÚ"],
+["Do you speak Portuguese?","Você fala português?","du iú spík pór-tchi-GUÍZ"],
+["Could you speak more slowly, please?","Pode falar mais devagar, por favor?","cud iú spík mór SLÔU-li, plíz"],
+["I don't understand.","Eu não entendi.","ai DÔUNT ân-der-STÉND"],
+["Can you repeat that, please?","Pode repetir, por favor?","kén iú ri-PÍT dhét, plíz"]]},
+{name:"Restaurante",ic:"🍽️",cards:[
+["A table for two, please.","Uma mesa para dois, por favor.","a TÊI-bol fór TÚ, plíz"],
+["Can I see the menu, please?","Posso ver o cardápio, por favor?","kén ai SÍ dhe MÉ-niu, plíz"],
+["I'd like a coffee, please.","Eu gostaria de um café, por favor.","aid LÁIK a CÓ-fi, plíz"],
+["What do you recommend?","O que você recomenda?","uót du iú ré-co-MÉND"],
+["Does this have meat?","Isso tem carne?","dâz DHIS hév MÍT"],
+["Could we have some water?","Pode trazer água?","cud uí hév sâm UÓ-ter"],
+["The check, please.","A conta, por favor.","dhe TCHÉK, plíz"],
+["It was delicious!","Estava delicioso!","it uóz di-LI-shâs"]]},
+{name:"Viagem",ic:"✈️",cards:[
+["Where is the airport?","Onde fica o aeroporto?","uér iz dhi ÉR-port"],
+["Here is my passport.","Aqui está meu passaporte.","HÍR iz mai PÉS-port"],
+["I have a reservation.","Eu tenho uma reserva.","ai hév a ré-ser-VÊI-shân"],
+["How much is a ticket to Boston?","Quanto custa uma passagem para Boston?","rau MÂTCH iz a TÍ-kit tu BÓS-ton"],
+["What time does the train leave?","Que horas o trem sai?","uót TÁIM dâz dhe TRÊIN LÍV"],
+["Where is the bathroom?","Onde fica o banheiro?","uér iz dhe BÉTH-rum"],
+["I'm lost. Can you help me?","Estou perdido. Pode me ajudar?","aim LÓST. kén iú HÉLP mi"],
+["Is this seat taken?","Este lugar está ocupado?","iz DHIS SÍT TÊI-kn"]]},
+{name:"Compras",ic:"🛍️",cards:[
+["How much is this?","Quanto custa isto?","rau MÂTCH iz DHIS"],
+["Do you have a smaller size?","Você tem um tamanho menor?","du iú hév a SMÓ-ler SÁIZ"],
+["I'm just looking, thanks.","Só estou olhando, obrigado.","aim djâst LÚ-kin, thénks"],
+["Can I try it on?","Posso experimentar?","kén ai TRÁI it ÓN"],
+["Do you accept credit cards?","Vocês aceitam cartão de crédito?","du iú ak-SÉPT CRÉ-dit cárds"],
+["It's too expensive.","Está caro demais.","its TÚ iks-PÉN-siv"],
+["I'll take it.","Vou levar.","áiol TÊIK it"],
+["Can I get a discount?","Consigo um desconto?","kén ai guét a DÍS-kaunt"]]},
+{name:"Direções",ic:"🧭",cards:[
+["Turn left at the corner.","Vire à esquerda na esquina.","târn LÉFT ét dhe CÓR-ner"],
+["Go straight ahead.","Siga em frente.","gôu STRÊIT a-RÉD"],
+["It's next to the bank.","Fica ao lado do banco.","its NÉKST tu dhe BÉNK"],
+["How far is it from here?","Quão longe fica daqui?","rau FÁR iz it from HÍR"],
+["Is it close?","É perto?","iz it CLÔUS"],
+["Can you show me on the map?","Pode me mostrar no mapa?","kén iú SHÔU mi on dhe MÉP"],
+["Take the second street on the right.","Pegue a segunda rua à direita.","têik dhe SÉ-kând STRÍT on dhe RÁIT"],
+["It's a five-minute walk.","É uma caminhada de cinco minutos.","its a FÁIV MI-nit UÓK"]]},
+{name:"Dia a dia",ic:"☀️",cards:[
+["What time is it?","Que horas são?","uót TÁIM iz it"],
+["I'm running late.","Estou atrasado.","aim RÂ-nin LÊIT"],
+["Let's have lunch together.","Vamos almoçar juntos.","léts hév LÂNTCH tu-GUÉ-dher"],
+["I need to go now.","Preciso ir agora.","ai NÍD tu GÔU nau"],
+["What are you doing today?","O que você vai fazer hoje?","uót ar iú DU-in tu-DÊI"],
+["I'm tired today.","Estou cansado hoje.","aim TÁI-erd tu-DÊI"],
+["Can you help me, please?","Pode me ajudar, por favor?","kén iú HÉLP mi, plíz"],
+["I'll call you tomorrow.","Ligo para você amanhã.","áiol CÓL iú tu-MÓ-rou"]]},
+{name:"Saúde e emergência",ic:"🏥",cards:[
+["I need a doctor.","Preciso de um médico.","ai NÍD a DÓC-ter"],
+["Please call an ambulance!","Chame uma ambulância, por favor!","plíz CÓL an ÉM-biu-lans"],
+["I don't feel well.","Não estou me sentindo bem.","ai DÔUNT FÍL uél"],
+["I have a headache.","Estou com dor de cabeça.","ai hév a HÉ-dêik"],
+["I'm allergic to penicillin.","Sou alérgico a penicilina.","aim a-LÂR-djik tu pé-ni-SI-lin"],
+["Where is the pharmacy?","Onde fica a farmácia?","uér iz dhe FÁR-ma-si"],
+["It hurts here.","Dói aqui.","it HÂRTS hír"],
+["I lost my wallet.","Perdi minha carteira.","ai LÓST mai UÓ-lit"]]}
+];
+const ALL=UNITS.flatMap((u,ui)=>u.cards.map((c,i)=>({id:ui+"-"+i,en:c[0],pt:c[1],pr:c[2],u:ui})));
+
+/* ============ PROGRESSO (salvo no navegador) ============ */
+const KEY="uaitrump_v1";
+const DEF={cards:{},xp:0,streak:0,last:"",voice:"",mode:"falar"};
+let st=load();
+function load(){try{return Object.assign({},DEF,JSON.parse(localStorage.getItem(KEY))||{})}catch(e){return Object.assign({},DEF)}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+function dstr(d=new Date()){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function addDays(n){const d=new Date();d.setDate(d.getDate()+n);return dstr(d)}
+const INTERVALS=[0,1,2,4,7,15]; // revisão espaçada: dias até rever, por "caixa"
+const isNew=c=>!st.cards[c.id];
+const isDue=c=>st.cards[c.id]&&st.cards[c.id].due<=dstr();
+const mastered=c=>st.cards[c.id]&&st.cards[c.id].box>=3;
+const shuffle=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+const $=s=>document.querySelector(s);
+
+function grade(c,level){ // 0 errei, 1 quase, 2 acertei
+  const s=st.cards[c.id]||{box:0};
+  if(level===2)s.box=Math.min(5,s.box+1);
+  else if(level===0)s.box=0;
+  s.due=level===0?dstr():addDays(Math.max(1,INTERVALS[s.box]));
+  st.cards[c.id]=s;
+  st.xp+=[0,5,10][level];
+  const t=dstr();
+  if(st.last!==t){st.streak=(st.last===addDays(-1))?st.streak+1:1;st.last=t}
+  save();
+}
+
+/* ============ VOZ: ouvir (síntese) e falar (reconhecimento) ============ */
+function voices(){return ((window.speechSynthesis&&window.speechSynthesis.getVoices())||[]).filter(v=>v.lang.toLowerCase().startsWith("en"))}
+function pickVoice(){
+  const vs=voices();
+  return vs.find(v=>v.name===st.voice)||vs.find(v=>/Aria|Jenny|Guy|Google US|Zira|Samantha/i.test(v.name)&&/en-US/i.test(v.lang))||vs.find(v=>/en-US/i.test(v.lang))||vs[0];
+}
+function say(text,slow){
+  if(!window.speechSynthesis){return}
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="en-US";const v=pickVoice();if(v)u.voice=v;
+  u.rate=slow?0.6:0.95;
+  document.body.classList.add("speaking");
+  u.onend=u.onerror=()=>document.body.classList.remove("speaking");
+  window.speechSynthesis.speak(u);
+}
+function listen(cb){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){cb({err:"unsupported"});return}
+  const r=new SR();r.lang="en-US";r.maxAlternatives=3;let done=false;
+  r.onresult=e=>{done=true;cb({alts:[...e.results[0]].map(a=>a.transcript)})};
+  r.onerror=e=>{if(!done){done=true;cb({err:e.error})}};
+  r.onend=()=>{if(!done){done=true;cb({err:"no-speech"})}};
+  try{r.start()}catch(e){cb({err:"busy"})}
+}
+const MICERR={
+  unsupported:"Este navegador não reconhece voz. Abra no Chrome ou Edge.",
+  "not-allowed":"Microfone bloqueado. Clique no cadeado ao lado do endereço e permita o microfone.",
+  "service-not-allowed":"Microfone bloqueado. Clique no cadeado ao lado do endereço e permita o microfone.",
+  "no-speech":"Não ouvi nada. Clique em Falar e tente de novo.",
+  network:"O reconhecimento de voz precisa de internet.",
+  "audio-capture":"Nenhum microfone encontrado."
+};
+
+/* ============ COMPARAÇÃO DE TEXTO ============ */
+const EXP=[[/\bi'm\b/g,"i am"],[/\byou're\b/g,"you are"],[/\bit's\b/g,"it is"],[/\bdon't\b/g,"do not"],[/\bi'd\b/g,"i would"],[/\bi'll\b/g,"i will"],[/\blet's\b/g,"let us"],[/\bwhat's\b/g,"what is"],[/\bthat's\b/g,"that is"]];
+function norm(s){
+  s=s.toLowerCase().replace(/[’`]/g,"'");
+  EXP.forEach(([a,b])=>s=s.replace(a,b));
+  return s.replace(/[^a-z0-9' ]/g," ").replace(/'/g,"").replace(/\s+/g," ").trim();
+}
+function lev(a,b){
+  const m=a.length,n=b.length,d=Array.from({length:m+1},(_,i)=>[i]);
+  for(let j=1;j<=n;j++)d[0][j]=j;
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+  return d[m][n];
+}
+function sim(a,b){a=norm(a);b=norm(b);const L=Math.max(a.length,b.length);return L?1-lev(a,b)/L:1}
+function wordsHTML(target,heard){
+  const hw=new Set(norm(heard).split(" "));
+  return target.split(/\s+/).map(w=>`<span class="${hw.has(norm(w))?"w-ok":"w-bad"}">${w}</span>`).join(" ");
+}
+const lvl=s=>s>=.92?2:s>=.75?1:0;
+
+/* ============ TELAS ============ */
+let S=null;
+const app=$("#app");
+
+function home(){
+  S=null;if(window.speechSynthesis)window.speechSynthesis.cancel();
+  const due=ALL.filter(isDue).length,nw=Math.min(5,ALL.filter(isNew).length);
+  const seen=ALL.filter(c=>!isNew(c)).length;
+  const streak=(st.last===dstr()||st.last===addDays(-1))?st.streak:0;
+  const modes={falar:["Falar","Veja em português, diga em inglês e confira sua pronúncia. É o modo principal."],ouvir:["Ouvir e escrever","Escute a frase e escreva o que entendeu. Treina o ouvido."],traduzir:["Traduzir","Veja em português e escreva em inglês. Treina a memória."]};
+  const vs=voices();
+  app.innerHTML=`<div class="wrap">
+  <h1>UaiTrump</h1><p class="sub">Aprenda a falar inglês: ouça, repita em voz alta e revise um pouco todo dia.</p>
+  <div class="stats"><span class="stat">🔥 ${streak} ${streak===1?"dia":"dias"} seguidos</span><span class="stat">⭐ ${st.xp} pontos</span><span class="stat">💬 ${seen}/${ALL.length} frases vistas</span></div>
+  <section class="today"><h2>Sessão de hoje</h2>
+  <p>${due} para revisar · ${nw} frases novas</p>
+  <div class="modes" role="group" aria-label="Modo de estudo">${Object.entries(modes).map(([k,v])=>`<button class="${st.mode===k?"on":""}" onclick="setMode('${k}')">${v[0]}</button>`).join("")}</div>
+  <p class="modedesc">${modes[st.mode][1]}</p>
+  <button class="primary" onclick="start(null)">Começar</button></section>
+  <h2>Escolha um assunto</h2>
+  ${UNITS.map((u,i)=>{const cs=ALL.filter(c=>c.u===i),m=cs.filter(mastered).length,sn=cs.filter(c=>!isNew(c)).length;
+   return `<div class="unit"><span class="ic">${u.ic}</span><div class="mid"><b>${u.name}</b><small>${sn}/${cs.length} vistas · ${m} dominadas</small><div class="pbar"><i style="width:${m/cs.length*100}%"></i></div></div><button onclick="start(${i})">Praticar</button></div>`}).join("")}
+  <h2>Como funciona</h2>
+  <details><summary>O método por trás da página</summary><ul>
+  <li><b>Frases inteiras, não palavras soltas.</b> Você aprende o que realmente vai dizer.</li>
+  <li><b>Ouvir → repetir em voz alta.</b> Falar é um músculo: só treina falando.</li>
+  <li><b>Revisão espaçada.</b> Frase que você erra volta logo; a que você acerta volta em 1, 2, 4, 7 e 15 dias.</li>
+  <li><b>10 minutos por dia</b> valem mais que 2 horas no domingo.</li>
+  <li>Use o botão 🐢 Devagar para ouvir cada som com calma. O guia "Fale assim" mostra a pronúncia aproximada em português.</li></ul></details>
+  <h2>Configurações</h2>
+  <label>Voz em inglês:&nbsp;<select onchange="st.voice=this.value;save();say('Hello, nice to meet you.')">
+  ${vs.length?vs.map(v=>`<option value="${v.name}" ${pickVoice()&&pickVoice().name===v.name?"selected":""}>${v.name} (${v.lang})</option>`).join(""):"<option>Carregando vozes…</option>"}</select></label>
+  <p class="hint">Dica: no Chrome ou Edge o microfone e as vozes funcionam melhor. O reconhecimento de voz usa internet.</p>
+  </div>`;
+}
+function setMode(m){st.mode=m;save();home()}
+if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=()=>{if(!S)home()};
+
+function start(ui){
+  const pool=ui==null?ALL:ALL.filter(c=>c.u===ui);
+  let q=shuffle(pool.filter(isDue)).slice(0,8).concat(pool.filter(isNew).slice(0,5));
+  if(!q.length)q=shuffle(pool.filter(c=>!isNew(c))).slice(0,8);
+  S={queue:q,i:0,mode:st.mode,seen:{},retried:{},ok:0,miss:0,c:null};
+  render();
+}
+function topBar(){
+  const pct=Math.round(S.i/S.queue.length*100);
+  return `<div class="top"><button class="ghost" onclick="home()">✕ Sair</button><div class="bar"><i style="width:${pct}%"></i></div><span>${Math.min(S.i+1,S.queue.length)}/${S.queue.length}</span></div>`;
+}
+const audioBtns=()=>`<div class="row"><button onclick="say(S.c.en)">🔊 Ouvir</button><button onclick="say(S.c.en,true)">🐢 Devagar</button></div>`;
+
+function render(){
+  const c=S.queue[S.i];
+  if(!c)return finish();
+  S.c=c;S.shown=false;
+  let body;
+  if(isNew(c)&&!S.seen[c.id]) body=learnView(c);
+  else if(S.mode==="falar") body=speakView(c);
+  else if(S.mode==="ouvir") body=listenView(c);
+  else body=transView(c);
+  app.innerHTML=topBar()+`<main class="stage"><div class="card">${body}</div></main>`;
+  if(isNew(c)&&!S.seen[c.id])setTimeout(()=>say(c.en),300);
+  else if(S.mode==="ouvir")setTimeout(()=>say(c.en),300);
+  const inp=$("#inp");if(inp){inp.focus();inp.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();S.shown?next(S.level):check()}}}
+}
+function learnView(c){return `<p class="say">Frase nova. Ouça, repita em voz alta e continue.</p>
+<div class="phrase">${c.en}</div><div class="pron">Fale assim: ${c.pr}</div><div class="pt">${c.pt}</div>
+<div class="row"><button onclick="say(S.c.en)">🔊 Ouvir</button><button onclick="say(S.c.en,true)">🐢 Devagar</button><button onclick="mic()">🎤 Repetir</button></div>
+<div class="res" id="res"></div><button class="primary" onclick="S.seen[S.c.id]=1;render()">Continuar</button>`}
+
+function speakView(c){return `<p class="say">Como se diz em inglês?</p><div class="ptbig">${c.pt}</div>
+<div class="row" id="act"><button onclick="mic()">🎤 Falar</button><button onclick="reveal()">Mostrar resposta</button></div>
+<div class="res" id="res"></div><div id="ans" class="hidden"></div><div class="rate hidden" id="rate">
+<button class="r0" onclick="next(0)">Errei</button><button class="r1" onclick="next(1)">Quase</button><button class="r2" onclick="next(2)">Acertei</button></div>`}
+function reveal(sug){
+  $("#ans").classList.remove("hidden");$("#rate").classList.remove("hidden");
+  $("#ans").innerHTML=`<div class="phrase">${S.c.en}</div><div class="pron">Fale assim: ${S.c.pr}</div>${audioBtns()}`;
+  if(sug!=null)document.querySelector(".r"+sug).classList.add("sug");
+  say(S.c.en);
+}
+function mic(){
+  const out=$("#res");out.innerHTML=`<p class="hint pulse">🎤 Ouvindo… fale agora</p>`;
+  listen(r=>{
+    if(r.err){out.innerHTML=`<span class="msg">${MICERR[r.err]||"Não deu certo ("+r.err+"). Tente de novo."}</span>`;return}
+    let best=r.alts[0],bs=-1;r.alts.forEach(a=>{const s=sim(a,S.c.en);if(s>bs){bs=s;best=a}});
+    out.innerHTML=`<div class="score">${Math.round(bs*100)}%</div><div class="hint">Você disse: “${best}”</div><div>${wordsHTML(S.c.en,best)}</div>`;
+    if(S.mode==="falar"&&S.seen[S.c.id]!==undefined||(S.mode==="falar"&&!isNew(S.c)))reveal(lvl(bs));
+  });
+}
+function listenView(c){return `<p class="say">Escute e escreva o que você ouviu.</p>${audioBtns()}
+<input id="inp" class="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Digite em inglês">
+<div class="res" id="res"></div><div id="act"><button class="primary" onclick="check()">Verificar</button></div>`}
+function transView(c){return `<p class="say">Escreva em inglês:</p><div class="ptbig">${c.pt}</div>
+<input id="inp" class="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Digite em inglês">
+<div class="res" id="res"></div><div id="act"><button class="primary" onclick="check()">Verificar</button></div>`}
+function check(){
+  const v=$("#inp").value.trim();if(!v)return;
+  const s=sim(v,S.c.en);S.level=lvl(s);S.shown=true;
+  const t=["Ainda não. Veja a resposta e repita em voz alta.","Quase! Falta um detalhe.","Correto! 🎉"][S.level];
+  $("#res").innerHTML=`<div class="score">${t}</div><div class="phrase" style="font-size:1.6rem">${S.c.en}</div><div class="pron">Fale assim: ${S.c.pr}</div><div class="hint">${S.c.pt}</div>${audioBtns()}`;
+  $("#inp").disabled=true;
+  $("#act").innerHTML=`<button class="primary" onclick="next(S.level)">Continuar</button>`;
+  say(S.c.en);
+}
+function next(level){
+  grade(S.c,level);
+  if(level===2)S.ok++;else S.miss++;
+  if(level===0&&!S.retried[S.c.id]){S.retried[S.c.id]=1;S.queue.push(S.c)}
+  S.i++;render();
+}
+function finish(){
+  const total=S.ok+S.miss;
+  app.innerHTML=`<div class="wrap"><div class="card"><p class="big">🎉</p><h1>Sessão concluída!</h1>
+  <p class="sub">Você acertou ${S.ok} de ${total}. As frases erradas voltam mais cedo na revisão.</p>
+  <p class="hint">Volte amanhã: revisar um pouco todo dia é o que fixa o inglês.</p>
+  <button class="primary" onclick="home()">Voltar ao início</button></div></div>`;
+}
+home();
+</script>
+</body>
+</html>
